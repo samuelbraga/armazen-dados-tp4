@@ -25,7 +25,7 @@ with DAG("new_york_tips_etl", default_args=default_args, schedule_interval= '@on
         python_callable=transform_data,
         op_kwargs={
             'bucket_name': 'tp-final-armazen-dados',
-            'file_key': 'raw/yellow_tripdata_2016-12.csv'
+            'file_key': 'raw/yellow_tripdata_2016-06.csv'
         },
     )
     
