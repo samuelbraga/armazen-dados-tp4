@@ -16,7 +16,7 @@ def transform_data(bucket_name, file_key):
 def get_data_frame(bucket_name, file_key):
     csv = get_file(bucket_name, file_key)
     body = csv['Body']
-    return pd.read_csv(body, nrows=9999)
+    return pd.read_csv(body)
 
 def reset_index(df):
     df.reset_index()
@@ -30,13 +30,14 @@ def create_columns(df):
     df["shift"] = ""
 
 def broke_date(df, index):
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     pickup_date = parse(df.at[index, 'tpep_pickup_datetime'])
     
     df.at[index, 'day'] = pickup_date.day
     df.at[index, 'month'] = pickup_date.month
     df.at[index, 'year'] = pickup_date.year
     df.at[index, 'hour'] = pickup_date.hour
-    df.at[index, 'hour'] = pickup_date.weekday
+    df.at[index, 'day_of_week'] = days[pickup_date.weekday()]
 
     if pickup_date.hour >= 4 & pickup_date.hour < 12:
         df.at[index, 'shift'] = "MORNING"
