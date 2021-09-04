@@ -21,7 +21,7 @@ with DAG("new_york_tips_etl", default_args=default_args, schedule_interval= '@on
 
     
     transform_stage = PythonOperator(
-        task_id='busca_dataframe_do_arquivo',
+        task_id='transforma_dataframe_arquivo',
         python_callable=transform_data,
         op_kwargs={
             'bucket_name': 'tp-final-armazen-dados',
