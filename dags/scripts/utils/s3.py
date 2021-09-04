@@ -2,7 +2,7 @@ import os
 import sys
 import boto3
 
-s3 = boto3.resource('s3')
+s3 = boto3.client('s3')
 
-def get_file(bucket_name, fileKey):
-    return s3.Object(bucket_name, fileKey)
+def get_file(bucket_name, file_key):
+    return s3.get_object(bucket_name, key=file_key)

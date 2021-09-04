@@ -15,7 +15,7 @@ default_args = {
     "email_on_retry": False,
 }
 
-with DAG("new-york-tips-etl", default_args=default_args, schedule_interval= '@once') as dag:
+with DAG("new_york_tips_etl", default_args=default_args, schedule_interval= '@once') as dag:
 
     start_of_data_pipeline = DummyOperator(task_id='start_of_data_pipeline', dag=dag)
 
@@ -25,7 +25,7 @@ with DAG("new-york-tips-etl", default_args=default_args, schedule_interval= '@on
         python_callable=get_data_frame,
         op_kwargs={
             'bucket_name': 'tp-final-armazen-dados',
-            'fileKey': 'raw/yellow_tripdata_2016-12.csv'
+            'file_key': 'raw/yellow_tripdata_2016-12.csv'
         },
     )
     
