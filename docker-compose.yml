@@ -19,6 +19,8 @@ services:
         environment:
             - LOAD_EX=n
             - EXECUTOR=Local
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             - AIRFLOW_CONN_AWS_DEFAULT=aws://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}
         logging:
             options:
