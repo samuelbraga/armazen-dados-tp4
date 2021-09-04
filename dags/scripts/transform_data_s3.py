@@ -16,7 +16,7 @@ def transform_data(bucket_name, file_key):
 def get_data_frame(bucket_name, file_key):
     csv = get_file(bucket_name, file_key)
     body = csv['Body']
-    return pd.read_csv(body)
+    return pd.read_csv(body, nrows=9999)
 
 def reset_index(df):
     df.reset_index()
@@ -39,11 +39,11 @@ def broke_date(df, index):
     df.at[index, 'hour'] = pickup_date.hour
     df.at[index, 'day_of_week'] = days[pickup_date.weekday()]
 
-    if pickup_date.hour >= 4 & pickup_date.hour < 12:
+    if pickup_date.hour >= 4 and pickup_date.hour < 12:
         df.at[index, 'shift'] = "MORNING"
-    if pickup_date.hour >= 12 & pickup_date.hour < 18:
+    if pickup_date.hour >= 12 and pickup_date.hour < 18:
         df.at[index, 'shift'] = "AFTERNOON"
-    if pickup_date.hour >= 18 & pickup_date.hour < 4:
+    if pickup_date.hour >= 18 and pickup_date.hour < 4:
         df.at[index, 'shift'] = "NIGHT" 
 
 def write_csv(data, filepath='./dags/tmp/'):
