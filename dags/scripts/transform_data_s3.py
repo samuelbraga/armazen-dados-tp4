@@ -26,6 +26,8 @@ def create_columns(df):
     df["month"] = ""
     df["year"] = ""
     df["hour"] = ""
+    df["day_of_week"] = ""
+    df["shift"] = ""
 
 def broke_date(df, index):
     pickup_date = parse(df.at[index, 'tpep_pickup_datetime'])
@@ -34,6 +36,14 @@ def broke_date(df, index):
     df.at[index, 'month'] = pickup_date.month
     df.at[index, 'year'] = pickup_date.year
     df.at[index, 'hour'] = pickup_date.hour
+    df.at[index, 'hour'] = pickup_date.weekday
+
+    if pickup_date.hour >= 4 & pickup_date.hour < 12:
+        df.at[index, 'shift'] = "MORNING"
+    if pickup_date.hour >= 12 & pickup_date.hour < 18:
+        df.at[index, 'shift'] = "AFTERNOON"
+    if pickup_date.hour >= 18 & pickup_date.hour < 4:
+        df.at[index, 'shift'] = "NIGHT" 
 
 def write_csv(data, filepath='./dags/tmp/'):
     filename = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
