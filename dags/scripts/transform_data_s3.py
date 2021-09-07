@@ -70,8 +70,10 @@ def set_datamart_ids(df, index):
     df.at[index, 'datetime_pickup_id'] = uuid4()
     df.at[index, 'datetime_dropoff_id'] = uuid4()
     df.at[index, 'tip_id'] = uuid4()
-    df.at[index, 'local_id'] = uuid4()
     df.at[index, 'fare_id'] = uuid4()
+    df.at[index, 'dropoff_location_id'] = uuid4()
+    df.at[index, 'pickup_location_id'] = uuid4()
+    df.at[index, 'payment_id'] = uuid4()
 
 def get_year_from_file_key(file_key):
     file_name_parts = file_key.split('_')
