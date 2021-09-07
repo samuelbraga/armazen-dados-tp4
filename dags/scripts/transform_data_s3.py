@@ -1,10 +1,13 @@
 import os
 import sys
 import pandas as pd
+from uuid import uuid4
 from dateutil.parser import parse
 from datetime import datetime, timedelta
 from scripts.utils.holidays import Holidays
 from scripts.utils.location import Location
+
+
 from scripts.utils.csv import Csv
 from scripts.utils.s3 import get_file, upload_file
 from scripts.utils.s3 import get_file
@@ -13,7 +16,6 @@ FILE_PATH = './dags/tmp/'
 def transform_data(bucket_name, file_key):
     df = Csv.download_csv_from_s3_to_dataframe(bucket_name, file_key, nrows=9999)
     reset_index(df)
-    create_columns(df)
     try:
         year = get_year_from_file_key(file_key)
     except ValueError:
@@ -41,15 +43,6 @@ def get_data_frame(bucket_name, file_key):
 def reset_index(df):
     df.reset_index()
 
-def create_columns(df):
-    df["day"] = ""
-    df["month"] = ""
-    df["year"] = ""
-    df["hour"] = ""
-    df["day_of_week"] = ""
-    df["shift"] = ""
-    df["is_holiday"] = ""
-
 def broke_date(df, index, holiday_data):
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     pickup_date = parse(df.at[index, 'tpep_pickup_datetime'])
@@ -65,7 +58,12 @@ def broke_date(df, index, holiday_data):
     if pickup_date.hour >= 12 and pickup_date.hour < 18:
         df.at[index, 'shift'] = "AFTERNOON"
     if pickup_date.hour >= 18 or pickup_date.hour < 4:
-        df.at[index, 'shift'] = "NIGHT" 
+        df.at[index, 'shift'] = "NIGHT"
+    
+    df.at[index, 'datetime_id'] = uuid4()
+    df.at[index, 'tip_id'] = uuid4()
+    df.at[index, 'local_id'] = uuid4()
+    df.at[index, 'payment_id'] = uuid4()
 
 def write_csv(data, file_path='./dags/tmp/'):
     file_name = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
