@@ -3,14 +3,12 @@ import sys
 import pandas as pd
 from dateutil.parser import parse
 from datetime import datetime, timedelta
-from uuid import uuid4
 
 from scripts.utils.s3 import get_file, upload_file
 
 def create_datamarts(bucket_name, file_key):
     df = get_data_frame(bucket_name, file_key)
     reset_index(df)
-    create_columns(df)
     datamart_datetime = pd.DataFrame(columns = [
         'day',
         'month',
@@ -36,14 +34,10 @@ def get_data_frame(bucket_name, file_key):
 def reset_index(df):
     df.reset_index()
 
-def create_columns(df):
-    df['datetime_id'] = ""
-
 
 def set_datamart_datetime(datamart_datetime, df, index):
-    uuid = uuid4();
     new_rol = {
-        'id': uuid,
+        'id': df.at[index, 'datetime_id'],
         'day': df.at[index, 'day'],
         'month': df.at[index, 'month'],
         'year': df.at[index, 'year'],
@@ -53,7 +47,6 @@ def set_datamart_datetime(datamart_datetime, df, index):
     }
 
     datamart_datetime = datamart_datetime.append(new_rol, ignore_index=True)
-    df.at[index, 'datetime_id'] = uuid
     
     return datamart_datetime
 

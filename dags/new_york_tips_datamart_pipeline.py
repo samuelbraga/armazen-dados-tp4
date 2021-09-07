@@ -25,7 +25,7 @@ with DAG("new_york_tips_datamart", default_args=default_args, schedule_interval=
         python_callable=create_datamarts,
         op_kwargs={
             'bucket_name': 'tp-final-armazen-dados',
-            'file_key': 'normalized/teste2021_09_07_01_30_47.csv'
+            'file_key': 'normalized/teste2021_09_07_16_22_00.csv'
         },
     )
     

@@ -1,10 +1,12 @@
 import os
 import sys
 import pandas as pd
+from uuid import uuid4
 from dateutil.parser import parse
 from datetime import datetime, timedelta
 from scripts.utils.holidays import Holidays
 from scripts.utils.location import Location
+
 
 from scripts.utils.s3 import get_file, upload_file
 from scripts.utils.s3 import get_file
@@ -48,6 +50,10 @@ def create_columns(df):
     df["day_of_week"] = ""
     df["shift"] = ""
     df["is_holiday"] = ""
+    df["datetime_id"] = ""
+    df["tip_id"] = ""
+    df["local_id"] = ""
+    df["payment_id"] = ""
 
 def broke_date(df, index, holiday_data):
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -64,7 +70,12 @@ def broke_date(df, index, holiday_data):
     if pickup_date.hour >= 12 and pickup_date.hour < 18:
         df.at[index, 'shift'] = "AFTERNOON"
     if pickup_date.hour >= 18 or pickup_date.hour < 4:
-        df.at[index, 'shift'] = "NIGHT" 
+        df.at[index, 'shift'] = "NIGHT"
+    
+    df.at[index, 'datetime_id'] = uuid4()
+    df.at[index, 'tip_id'] = uuid4()
+    df.at[index, 'local_id'] = uuid4()
+    df.at[index, 'payment_id'] = uuid4()
 
 def write_csv(data, file_path='./dags/tmp/'):
     file_name = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
