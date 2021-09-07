@@ -60,7 +60,7 @@ def set_datamart_datetime(datamart_datetime, df, index):
 def write_csv(data, file_path='./dags/tmp/'):
     file_name = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
     file_path = file_path + file_name
-    data.to_csv(file_path)
+    data.to_csv(file_path, index=False)
 
 def write_csv11(data, file_path='./dags/tmp/'):
     file_name = 'teste11' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
