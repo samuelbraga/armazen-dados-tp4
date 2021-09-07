@@ -19,8 +19,6 @@ def transform_data(bucket_name, file_key):
     
     df.reset_index()
 
-    print(list_objects(bucket_name))
-    
     try:
         year = get_year_from_file_key(file_key)
     except ValueError:
