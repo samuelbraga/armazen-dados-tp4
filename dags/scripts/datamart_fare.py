@@ -17,7 +17,7 @@ def create_fare_datamart(bucket_name, file_key):
     
     fare.reset_index()
 
-    file_name = Csv.get_file_name_from_file_key(file_key, prefix='datetime_')
+    file_name = Csv.get_file_name_from_file_key(file_key, prefix='fare_')
     file_name = file_name.replace("normalized_", "")
     Csv.write_local_csv_from_dataframe(fare, file_name)
     Csv.upload_csv_to_s3(bucket_name, file_name, s3_folder='datamart/fare/')
