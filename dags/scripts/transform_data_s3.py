@@ -29,7 +29,7 @@ def transform_data(bucket_name, file_key):
 
     file_name = Csv.get_file_name_from_file_key(file_key)
     Csv.write_local_csv_from_dataframe(df, file_name, index_label='id')
-    # Csv.upload_csv_to_s3(bucket_name, file_name)
+    Csv.upload_csv_to_s3(bucket_name, file_name)
 
 def broke_date(df, index, holiday_data):
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
