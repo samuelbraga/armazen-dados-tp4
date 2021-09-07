@@ -5,13 +5,13 @@ from dateutil.parser import parse
 from datetime import datetime, timedelta
 from scripts.utils.holidays import Holidays
 from scripts.utils.location import Location
-
+from scripts.utils.csv import Csv
 from scripts.utils.s3 import get_file, upload_file
 from scripts.utils.s3 import get_file
 FILE_PATH = './dags/tmp/'
 
 def transform_data(bucket_name, file_key):
-    df = get_data_frame(bucket_name, file_key)
+    df = Csv.download_csv_from_s3_to_dataframe(bucket_name, file_key, nrows=9999)
     reset_index(df)
     create_columns(df)
     try:
@@ -22,8 +22,9 @@ def transform_data(bucket_name, file_key):
     holiday_data = Holidays(year)
     for index, row in df.iterrows():
         broke_date(df, index, holiday_data)
-    write_csv(df)
-    upload_csv(bucket_name)
+    file_name = Csv.get_file_name_from_file_key(file_key)
+    Csv.write_local_csv_from_dataframe(df, file_name, index_label='id')
+    #Csv.upload_csv_to_s3(bucket_name, file_name)
 
 def parse_location_dimension(file_path):
     df = pd.read_csv(file_path)
