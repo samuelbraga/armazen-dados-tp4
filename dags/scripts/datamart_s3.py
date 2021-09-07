@@ -4,6 +4,7 @@ import pandas as pd
 from dateutil.parser import parse
 from datetime import datetime, timedelta
 
+from scripts.utils.csv import Csv
 from scripts.utils.s3 import get_file, upload_file
 
 def create_datamarts(bucket_name, file_key):
@@ -13,11 +14,11 @@ def create_datamarts(bucket_name, file_key):
     
     for index, row in df.iterrows():
         datamart_datetime = set_datamart_datetime(datamart_datetime, df, index)
-
     reset_index(df=datamart_datetime)
-    write_csv(datamart_datetime)
-    write_csv11(df)
-    # upload_csv(bucket_name)
+    file_name = Csv.get_file_name_from_file_key(file_key, prefix='table_datetime_')
+    Csv.write_local_csv_from_dataframe(datamart_datetime, file_name)
+    #Csv.upload_csv_to_s3(bucket_name, file_name)
+
     
 def get_data_frame(bucket_name, file_key):
     csv = get_file(bucket_name, file_key)
