@@ -26,6 +26,7 @@ def transform_data(bucket_name, file_key):
     holiday_data = Holidays(year)
 
     for index, row in df.iterrows():
+        get_trip_duration(df, index)
         broke_date_pickup(df, index, holiday_data)
         broke_date_dropoff(df, index, holiday_data)
         set_datamart_ids(df, index)
@@ -33,6 +34,12 @@ def transform_data(bucket_name, file_key):
     file_name = Csv.get_file_name_from_file_key(file_key)
     Csv.write_local_csv_from_dataframe(df, file_name, index_label='id')
     Csv.upload_csv_to_s3(bucket_name, file_name)
+
+def get_trip_duration(df, index):
+    pickup_date = parse(df.at[index, 'tpep_pickup_datetime'])
+    dropoff_date = parse(df.at[index, 'tpep_dropoff_datetime'])
+    trip_duration = dropoff_date - pickup_date
+    df.at[index, 'trip_duration'] = trip_duration.seconds / 60
 
 def broke_date_pickup(df, index, holiday_data):
     pickup_date = parse(df.at[index, 'tpep_pickup_datetime'])
