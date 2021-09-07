@@ -4,14 +4,16 @@ import pandas as pd
 from dateutil.parser import parse
 from datetime import datetime, timedelta
 
-from scripts.utils.s3 import get_file
+from scripts.utils.s3 import get_file, upload_file
 
 def transform_data(bucket_name, file_key):
     df = get_data_frame(bucket_name, file_key)
+    reset_index(df)
     create_columns(df)
     for index, row in df.iterrows():
         broke_date(df, index)
     write_csv(df)
+    upload_csv(bucket_name)
     
 def get_data_frame(bucket_name, file_key):
     csv = get_file(bucket_name, file_key)
@@ -43,10 +45,16 @@ def broke_date(df, index):
         df.at[index, 'shift'] = "MORNING"
     if pickup_date.hour >= 12 and pickup_date.hour < 18:
         df.at[index, 'shift'] = "AFTERNOON"
-    if pickup_date.hour >= 18 and pickup_date.hour < 4:
+    if pickup_date.hour >= 18 or pickup_date.hour < 4:
         df.at[index, 'shift'] = "NIGHT" 
 
-def write_csv(data, filepath='./dags/tmp/'):
-    filename = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
-    filepath = filepath + filename
-    data.to_csv(filepath, index_label='id')
+def write_csv(data, file_path='./dags/tmp/'):
+    file_name = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+    file_path = file_path + file_name
+    data.to_csv(file_path, index_label='id')
+
+def upload_csv(bucket_name, file_path='./dags/tmp/'):
+    file_name = 'teste' + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+    file_path = file_path + file_name
+    file_key = "normalized/" + file_name
+    upload_file(bucket_name, file_path, file_key)
