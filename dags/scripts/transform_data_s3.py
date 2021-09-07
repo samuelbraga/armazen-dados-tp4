@@ -9,7 +9,7 @@ from scripts.utils.location import Location
 
 
 from scripts.utils.csv import Csv
-from scripts.utils.s3 import get_file, upload_file
+from scripts.utils.s3 import get_file, upload_file, list_objects
 from scripts.utils.s3 import get_file
 
 DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -18,6 +18,8 @@ def transform_data(bucket_name, file_key):
     df = Csv.download_csv_from_s3_to_dataframe(bucket_name, file_key, nrows=9999)
     
     df.reset_index()
+
+    print(list_objects(bucket_name))
     
     try:
         year = get_year_from_file_key(file_key)
