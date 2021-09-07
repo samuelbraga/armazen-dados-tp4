@@ -4,8 +4,10 @@ import pandas as pd
 from dateutil.parser import parse
 from datetime import datetime, timedelta
 from scripts.utils.holidays import Holidays
+from scripts.utils.location import Location
 
 from scripts.utils.s3 import get_file
+FILE_PATH = './dags/tmp/'
 
 def transform_data(bucket_name, file_key):
     df = get_data_frame(bucket_name, file_key)
@@ -20,6 +22,13 @@ def transform_data(bucket_name, file_key):
         broke_date(df, index, holiday_data)
     write_csv(df)
 
+def parse_location_dimension(file_path):
+    df = pd.read_csv(file_path)
+    location_parser = Location(df)
+    location_parser.parse_dimension()
+    
+    location_parser.dataframe.to_csv(FILE_PATH+'location.csv', index_label='id')
+    
 def get_data_frame(bucket_name, file_key):
     csv = get_file(bucket_name, file_key)
     body = csv['Body']

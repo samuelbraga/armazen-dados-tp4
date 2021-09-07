@@ -1,6 +1,4 @@
 import requests
-from requests import Response
-import json
 from datetime import datetime
 class Holidays:
     def __init__(self, year):
