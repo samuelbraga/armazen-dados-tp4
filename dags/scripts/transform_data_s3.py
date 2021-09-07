@@ -15,7 +15,6 @@ FILE_PATH = './dags/tmp/'
 def transform_data(bucket_name, file_key):
     df = get_data_frame(bucket_name, file_key)
     reset_index(df)
-    create_columns(df)
     try:
         year = get_year_from_file_key(file_key)
     except ValueError:
@@ -41,19 +40,6 @@ def get_data_frame(bucket_name, file_key):
 
 def reset_index(df):
     df.reset_index()
-
-def create_columns(df):
-    df["day"] = ""
-    df["month"] = ""
-    df["year"] = ""
-    df["hour"] = ""
-    df["day_of_week"] = ""
-    df["shift"] = ""
-    df["is_holiday"] = ""
-    df["datetime_id"] = ""
-    df["tip_id"] = ""
-    df["local_id"] = ""
-    df["payment_id"] = ""
 
 def broke_date(df, index, holiday_data):
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']

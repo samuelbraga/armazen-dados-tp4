@@ -9,14 +9,7 @@ from scripts.utils.s3 import get_file, upload_file
 def create_datamarts(bucket_name, file_key):
     df = get_data_frame(bucket_name, file_key)
     reset_index(df)
-    datamart_datetime = pd.DataFrame(columns = [
-        'day',
-        'month',
-        'year',
-        'hour',
-        'shift',
-        'day_of_week'],
-        index=['id'])
+    datamart_datetime = pd.DataFrame()
     
     for index, row in df.iterrows():
         datamart_datetime = set_datamart_datetime(datamart_datetime, df, index)
