@@ -17,8 +17,11 @@ default_args = {
     "email_on_failure": False,
     "email_on_retry": False,
 }
-
-with DAG("new_york_tips_datamart", default_args=default_args, schedule_interval= '@once') as dag:
+def datamart_pipeline(parent_dag_name, child_dag_name, args):
+    dag = DAG(
+        dag_id='%s.%s' % (parent_dag_name, child_dag_name),
+        default_args=args,
+        schedule_interval="@daily")
 
     start_of_data_pipeline = DummyOperator(task_id='start_of_data_pipeline', dag=dag)
 
@@ -29,6 +32,7 @@ with DAG("new_york_tips_datamart", default_args=default_args, schedule_interval=
             'bucket_name': 'tp-final-armazen-dados',
             'file_key': 'normalized/normalized_yellow_tripdata_2015-01.csv'
         },
+        dag=dag
     )
     
     datetime_datamart = PythonOperator(
@@ -38,6 +42,7 @@ with DAG("new_york_tips_datamart", default_args=default_args, schedule_interval=
             'bucket_name': 'tp-final-armazen-dados',
             'file_key': 'normalized/normalized_yellow_tripdata_2015-01.csv'
         },
+        dag=dag
     )
 
     fare_datamart = PythonOperator(
@@ -47,6 +52,7 @@ with DAG("new_york_tips_datamart", default_args=default_args, schedule_interval=
             'bucket_name': 'tp-final-armazen-dados',
             'file_key': 'normalized/normalized_yellow_tripdata_2015-01.csv'
         },
+        dag=dag
     )
     
     location_datamart = PythonOperator(
@@ -56,8 +62,11 @@ with DAG("new_york_tips_datamart", default_args=default_args, schedule_interval=
             'bucket_name': 'tp-final-armazen-dados',
             'file_key': 'normalized/normalized_yellow_tripdata_2015-01.csv'
         },
+        dag=dag
     )
     # Fim da Pipeline
     end_of_data_pipeline = DummyOperator(task_id='end_of_data_pipeline', dag=dag)
 
-start_of_data_pipeline >> get_file_normalized >> [ datetime_datamart, fare_datamart, location_datamart ] >> end_of_data_pipeline
+    start_of_data_pipeline >> get_file_normalized >> [ datetime_datamart, fare_datamart, location_datamart ] >> end_of_data_pipeline
+
+    return dag
