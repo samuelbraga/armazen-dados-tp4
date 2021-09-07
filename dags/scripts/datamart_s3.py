@@ -16,8 +16,7 @@ def create_datamarts(bucket_name, file_key):
         datamart_datetime = set_datamart_datetime(datamart_datetime, df, index)
     reset_index(df=datamart_datetime)
     file_name = Csv.get_file_name_from_file_key(file_key, prefix='table_datetime_')
-    Csv.write_local_csv_from_dataframe(datamart_datetime, file_name)
-    #Csv.upload_csv_to_s3(bucket_name, file_name)
+    Csv.upload_csv_to_s3(bucket_name, file_name)
 
     
 def get_data_frame(bucket_name, file_key):
