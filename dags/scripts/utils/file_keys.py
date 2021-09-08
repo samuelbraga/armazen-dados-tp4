@@ -32,7 +32,7 @@ def get_next_normalized_file_key():
 
 def set_next_normalized_file_key(normalized_file_key):
     with open(NORMALIZED_FILE,'w+') as file:
-        file.write(normalized_file_key+'\n')
+        file.write(normalized_file_key)
 
 def delete_normalized_file_key():
     os.remove(NORMALIZED_FILE)

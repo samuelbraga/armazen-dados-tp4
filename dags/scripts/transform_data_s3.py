@@ -7,14 +7,17 @@ from datetime import datetime, timedelta
 from scripts.utils.holidays import Holidays
 from scripts.utils.location import Location
 
-
+from scripts.utils import file_keys
 from scripts.utils.csv import Csv
 from scripts.utils.s3 import get_file, upload_file, list_objects
 from scripts.utils.s3 import get_file
 
 DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-def transform_data(bucket_name, file_key):
+def transform_data(bucket_name):
+    file_key = file_keys.get_next_untreated_file_key()
+    if file_key==None:
+        return
     df = Csv.download_csv_from_s3_to_dataframe(bucket_name, file_key, nrows=9999)
     
     df.reset_index()
@@ -34,6 +37,8 @@ def transform_data(bucket_name, file_key):
     file_name = Csv.get_file_name_from_file_key(file_key)
     Csv.write_local_csv_from_dataframe(df, file_name, index_label='id')
     Csv.upload_csv_to_s3(bucket_name, file_name)
+    file_keys.set_next_normalized_file_key("normalized/"+file_name)
+
 
 def get_trip_duration(df, index):
     pickup_date = parse(df.at[index, 'tpep_pickup_datetime'])

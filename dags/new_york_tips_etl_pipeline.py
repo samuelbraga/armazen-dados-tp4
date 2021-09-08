@@ -27,8 +27,7 @@ with DAG(DAG_NAME, default_args=default_args, schedule_interval= '@once') as dag
         task_id='transforma_dataframe_arquivo',
         python_callable=transform_data,
         op_kwargs={
-            'bucket_name': 'tp-final-armazen-dados',
-            'file_key': 'raw/yellow_tripdata_2015-01.csv'
+            'bucket_name': 'tp-final-armazen-dados'
         },
         dag=dag
     )
