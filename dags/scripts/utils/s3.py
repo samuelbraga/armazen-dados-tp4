@@ -18,7 +18,7 @@ def list_objects(bucket_name, prefix='raw/'):
     keys = []
     arquivos = response['Contents']
     for arquivo in arquivos:
-        if(arquivo['Key'] != prefix and arquivo['Key'] != prefix):
+        if(arquivo['Key'] != prefix):
             keys.append(arquivo['Key'])
     
     return keys
