@@ -1,4 +1,5 @@
 import os
+from scripts.utils.s3 import list_objects
 FILE_PATH = './dags/tmp'
 UNTREATED_FILE=FILE_PATH+'/untreated_file_keys.txt'
 NORMALIZED_FILE=FILE_PATH+'/normalized_file_keys.txt'
@@ -6,7 +7,7 @@ NORMALIZED_FILE=FILE_PATH+'/normalized_file_keys.txt'
 def get_next_untreated_file_key():
     with open(UNTREATED_FILE,'r') as file:
         for line in file:
-            return line
+            return line[:-1] #tira o \n
         else:
             return None
 
@@ -36,3 +37,9 @@ def set_next_normalized_file_key(normalized_file_key):
 
 def delete_normalized_file_key():
     os.remove(NORMALIZED_FILE)
+
+def generate_untreated_file(bucket_name):
+    file_keys = [item+'\n' for item in list_objects(bucket_name)]
+
+    with open(UNTREATED_FILE, 'w+') as file:
+        file.writelines(file_keys)
